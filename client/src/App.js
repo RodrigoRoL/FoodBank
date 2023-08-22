@@ -12,10 +12,21 @@ import Dashboard from "./components/admin/Dashboard";
 import BoM from "./pages/DistributionRequest";
 import AddItem from './pages/additem';
 import ModifyItem from './pages/modifyitem';
+import PrivacyPolicy from './components/admin/PrivacyPolicy';
+import TermsOfService from './components/admin/TermsOfService'; 
+import DistributionReport from "./pages/DistributionReportPage";
+import Distribution from "./components/admin/DistributionManagement";
+import AboutUs from './components/admin/AboutUs';
+import Inventory from "./components/admin/InventoryManagement";
+import Inputs from './components/admin/Input';
+import Output from './components/admin/Output';
+
 
 const httpLink = createHttpLink({
   uri: '/graphql',
 });
+
+
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('id_token');
@@ -26,6 +37,7 @@ const authLink = setContext((_, { headers }) => {
     },
   };
 });
+
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
@@ -43,14 +55,29 @@ function App() {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/distribution" element={<Distribution />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/BoM" element={<BoM />} />
+              <Route
+                path="/distributionreport"
+                element={<DistributionReport />}
+              />
+
+
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/productlist" element={<ProductList />} />
               <Route path="/additem" element={<AddItem />} />
               <Route path="/modifyitem" element={<ModifyItem />} />
-              {/* <Route path="/matchup" element={<Matchup />} />
-              <Route path="/matchup/:id" element={<Vote />} /> */}
+              <Route path="/modifyitem/:productId" element={<ModifyItem />} />
+              <Route path="/inputs" element={<Inputs />} />
+              <Route path="/output" element={<Output />} />
+              <Route path="/privacy" element={<PrivacyPolicy />}/>
+              <Route path="/terms" element={<TermsOfService />}/>
+              <Route path="/aboutus" element={<AboutUs />}/>
+
+
+
               <Route path="*" element={<h1>Not found</h1>}></Route>
-              {/* <Route path="/checkout" element={<Checkout />} /> */}
             </Routes>
           </div>
         </Router>

@@ -48,36 +48,48 @@ const resolvers = {
             const category = await Category.create({ name }); 
             return category; 
         },
-        addProduct: async (parent, { name, description, quantity, categoryId}) => {
+        addProduct: async (parent, { name, description, image, quantity, categoryId }) => {
+            let category = null;
             
-            const category = await Category.findById(categoryId); 
-            
-            if (!category) {
-                throw new Error('Category not found'); 
+            if (categoryId) {
+              category = await Category.findById(categoryId);
+              
+              if (!category) {
+                throw new Error(`Category not found for ID: ${categoryId}`);
+              }
             }
-
+          
             const product = await Product.create({
-                name,
-                description,
-                quantity,
-                category: categoryId,
-            }); 
-
-            category.products.push(product._id); 
-            await category.save();
-            return product 
-
-        },
-        updateProduct: async (parent, { id, quantity }) => {
-            return await Product.findByIdAndUpdate(id,
-                { quantity },
-                { new: true }
-            )
-        },
+              name,
+              description,
+              image,
+              quantity,
+              category: categoryId,
+            });
+          
+            if (category) {
+              category.products.push(product._id);
+              await category.save();
+            }
+          
+            return product;
+          },
+          updateProduct: async (parent, { id, quantity, name, description }) => {
+            const updatedProduct = await Product.findByIdAndUpdate(id, {
+              quantity,
+              name,
+              description
+            }, { new: true });
+        
+            return updatedProduct;
+          },
+          
         deleteProduct: async (parent, { id }) => {
             return await Product.findOneAndDelete({ _id: id } )
-        }
+        },
     },
 }; 
 
 module.exports = resolvers; 
+
+

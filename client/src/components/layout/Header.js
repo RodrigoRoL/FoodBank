@@ -1,33 +1,47 @@
 import React from 'react';
-import { Box, Flex, Link, Spacer, Text, useColorMode, IconButton } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import Auth from '../utils/auth'; 
+import { Flex, Link, Spacer, useColorMode, IconButton, HStack, Image, useColorModeValue } from '@chakra-ui/react';
+import { useNavigate, Link as ReactRouterLink, useLocation } from 'react-router-dom';
 
+import Auth from '../utils/auth';
 
 function Header() {
     const { toggleColorMode } = useColorMode();
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const bg = useColorModeValue("primary", "gray.800");
+    const color = useColorModeValue("black", "white");
+    const linkColor = useColorModeValue("black", "gray.200");
 
     const handleLogout = () => {
         Auth.logout();
-        navigate('/');  
-    }
+        navigate('/');
+    };
 
+    const linkStyles = {
+        textDecoration: 'none',
+        _hover: {
+            textDecoration: 'none',
+        },
+    };
 
     return (
-        <Flex as="header" bg="primary" color="white" p={4} align="center" boxShadow="md">
-            <Box borderRadius="full" bg="secondary" p={2}>
-                <Text fontSize="xl" fontWeight="bold">FoodBank</Text>
-            </Box>
+        <Flex as="header" bg={bg} color={color} p={4} align="center" boxShadow="md">
+            <ReactRouterLink to="/dashboard" style={linkStyles}>   
+                <Image htmlHeight="200px" htmlWidth="200px" src='../../images/nbglogo.png' alt="logo" />
+            </ReactRouterLink>
             <Spacer />
-            <Box>
-                <Link mx={2} href="/" color="quaternary">Home</Link>
-                {/* ... other navigation links */}
-                {Auth.loggedIn() && (
-                    <Link mx={2} onClick={handleLogout} color="quaternary">Log Out</Link>
+            <HStack spacing="30px">
+                {location.pathname !== '/dashboard' && (
+                    <ReactRouterLink mx={2} to="/dashboard" style={{ color: linkColor }}>Home</ReactRouterLink>
                 )}
-            </Box>
-            <IconButton 
+                {Auth.loggedIn() && (
+                    <>
+                        <Link mx={2} onClick={handleLogout} style={{ color: linkColor }}>Log Out</Link>
+                    </>
+                )}
+            </HStack>
+            <IconButton
                 ml={4}
                 onClick={toggleColorMode}
                 aria-label="Toggle Color Mode"
